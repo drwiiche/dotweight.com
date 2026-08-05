@@ -44,38 +44,51 @@ export const Visualizer: React.FC = () => {
   return (
     <div className="bg-white rounded-3xl border border-[#dee3e9] p-5 sm:p-6 mb-6 shadow-sm relative">
       
-      {/* Visualizer Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 border-b border-[#dee3e9] pb-3">
-        <div>
-          <div className="flex items-center space-x-2">
-            <h2 className="text-base sm:text-lg font-bold text-[#0a1317] tracking-tight">Live Vehicle Schematic</h2>
-            <span className="text-xs font-bold px-3 py-0.5 rounded-full bg-[#f1f4f7] text-[#0a1317] border border-[#ced0d4]">
-              {axles.length} Axles
-            </span>
+      {/* Main Title & Visualizer Header */}
+      <div className="mb-4 border-b border-[#dee3e9] pb-4 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-[#0a1317] tracking-tight">
+              Federal Bridge Formula B & DOT Axle Weight Calculator
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 tracking-tight mt-0.5">
+              Real-time 23 CFR § 658.17 compliance engine for commercial trucks, semi-trailers, and heavy haulers.
+            </p>
           </div>
-          <p className="text-xs text-slate-500 tracking-tight">
-            Interactive visual rendering of axle positions and total outer wheelbase.
-          </p>
+
+          {/* Overall Status Badge */}
+          <div className="flex items-center space-x-2 shrink-0">
+            {compliance.overallStatus === 'COMPLIANT' && (
+              <span className="bg-[#31a24c] text-white px-3.5 py-1 rounded-full text-xs font-bold flex items-center space-x-1.5 shadow-2xs">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>COMPLIANT</span>
+              </span>
+            )}
+            {compliance.overallStatus === 'WARNING' && (
+              <span className="bg-[#f7b928] text-[#0a1317] px-3.5 py-1 rounded-full text-xs font-bold flex items-center space-x-1.5 shadow-2xs">
+                <AlertTriangle className="w-4 h-4" />
+                <span>NEAR LIMIT</span>
+              </span>
+            )}
+            {compliance.overallStatus === 'OVERWEIGHT' && (
+              <span className="bg-[#fa3e3e] text-white px-3.5 py-1 rounded-full text-xs font-bold flex items-center space-x-1.5 shadow-2xs">
+                <ShieldX className="w-4 h-4" />
+                <span>OVERWEIGHT ({compliance.violations[0]?.excessLbs?.toLocaleString()} lbs)</span>
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Overall Status Badge */}
-        <div className="flex items-center space-x-2">
-          {compliance.overallStatus === 'COMPLIANT' && (
-            <span className="bg-[#31a24c] text-white px-3.5 py-1 rounded-full text-xs font-bold flex items-center space-x-1.5 shadow-2xs">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>COMPLIANT</span>
+        <div className="flex items-center justify-between pt-2">
+          <h2 className="text-xs sm:text-sm font-bold text-slate-700 flex items-center gap-2">
+            <span>Live Vehicle Axle Diagram</span>
+            <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#f1f4f7] text-[#0a1317] border border-[#ced0d4]">
+              {axles.length} Axles
             </span>
-          )}
-          {compliance.overallStatus === 'WARNING' && (
-            <span className="bg-[#f7b928] text-[#0a1317] px-3.5 py-1 rounded-full text-xs font-bold flex items-center space-x-1.5 shadow-2xs">
-              <AlertTriangle className="w-4 h-4" />
-              <span>NEAR LIMIT</span>
-            </span>
-          )}
-          {compliance.overallStatus === 'OVERWEIGHT' && (
-            <span className="bg-[#e41e3f] text-white px-3.5 py-1 rounded-full text-xs font-bold flex items-center space-x-1.5 shadow-2xs">
-              <ShieldX className="w-4 h-4" />
-              <span>VIOLATION DETECTED</span>
+          </h2>
+          {preset && (
+            <span className="text-xs text-blue-600 font-semibold bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
+              Preset: {preset.name}
             </span>
           )}
         </div>

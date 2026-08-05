@@ -19,7 +19,8 @@ export type ActiveView =
   | 'legal-state-detail'
   | 'cat-scale-decoder'
   | 'pseo-matrix'
-  | 'admin-seo-health';
+  | 'admin-seo-health'
+  | '404';
 
 interface TruckStoreState {
   // Navigation State

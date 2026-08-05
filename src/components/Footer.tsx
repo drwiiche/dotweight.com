@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
               <div className="p-1.5 bg-blue-600/20 text-blue-400 rounded-md">
                 <Truck className="w-5 h-5 text-blue-400" />
               </div>
-              <span className="font-bold text-lg text-white tracking-tight">Axle<span className="text-blue-400">Guard</span></span>
+              <span className="font-bold text-lg text-white tracking-tight">DOT<span className="text-blue-400">Weight</span></span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               Professional DOT Axle Weight & Federal Bridge Formula B compliance calculator built for commercial drivers, dispatchers, hotshot haulers, and fleet managers.
@@ -125,7 +125,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} AxleGuard / DOT Bridge Calculator. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} DOTWeight.com / Federal Bridge Formula Calculator. All rights reserved.</p>
           <div className="flex items-center space-x-4">
             <span className="hover:text-slate-300 cursor-pointer" onClick={() => openLegalTab('privacy')}>Ad Choices & Privacy</span>
             <span>•</span>

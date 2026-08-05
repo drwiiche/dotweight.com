@@ -49,7 +49,7 @@ export const Header: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2">
               <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">
-                Axle<span className="text-[#0091ff]">Guard</span>
+                DOT<span className="text-[#0091ff]">Weight</span>
               </span>
               <span className="text-[#0091ff] text-[10px] font-extrabold bg-[#0064e0]/15 px-2 py-0.5 rounded-full border border-[#0064e0]/30 uppercase tracking-wider">
                 DOT

@@ -21,6 +21,7 @@ import { LegalStatePseoView } from './components/views/LegalStatePseoView';
 import { CatScaleDecoderView } from './components/views/CatScaleDecoderView';
 import { PseoMatrixView } from './components/views/PseoMatrixView';
 import { SeoHealthAdminView } from './components/views/SeoHealthAdminView';
+import { NotFoundView } from './components/views/NotFoundView';
 
 export default function App() {
   const {
@@ -35,45 +36,74 @@ export default function App() {
     setActiveView,
   } = useTruckStore();
 
-  // Initial client-side URL route parsing on mount
+  // Initial client-side URL route parsing on mount & window popstate
   useEffect(() => {
-    const path = window.location.pathname;
-    if (path.startsWith('/bridge-table/')) {
-      const parts = path.replace('/bridge-table/', '').split('-ft')[0].split('-axles-');
-      if (parts.length === 2) {
-        const axles = parseInt(parts[0], 10) || 5;
-        const spacing = parseInt(parts[1], 10) || 51;
-        openBridgeTablePermutation(axles, spacing);
-      } else {
+    const handleRoute = () => {
+      const path = window.location.pathname;
+
+      if (path === '/' || path === '') {
+        setActiveView('calculator');
+      } else if (path.startsWith('/bridge-table/')) {
+        const parts = path.replace('/bridge-table/', '').split('-ft')[0].split('-axles-');
+        if (parts.length === 2) {
+          const axles = parseInt(parts[0], 10) || 5;
+          const spacing = parseInt(parts[1], 10) || 51;
+          openBridgeTablePermutation(axles, spacing);
+        } else {
+          setActiveView('bridge-table-detail');
+        }
+      } else if (path === '/bridge-table') {
         setActiveView('bridge-table-detail');
+      } else if (path.startsWith('/trucks/')) {
+        const parts = path.replace('/trucks/', '').split('/');
+        if (parts.length >= 2 && parts[0] && parts[1]) {
+          openTruckStatePermutation(parts[0], parts[1]);
+        } else {
+          setActiveView('404');
+        }
+      } else if (path.startsWith('/legal/')) {
+        const raw = path.replace('/legal/', '').replace(/\/$/, '');
+        const stateSlug = raw.replace('-dot-weight-laws', '');
+        if (stateSlug) {
+          openLegalStatePermutation(stateSlug);
+        } else {
+          setActiveView('404');
+        }
+      } else if (path === '/cat-scale-decoder') {
+        setActiveView('cat-scale-decoder');
+      } else if (path === '/pseo-matrix' || path === '/sitemap-matrix') {
+        setActiveView('pseo-matrix');
+      } else if (path === '/legal-states' || path === '/states') {
+        setActiveView('states');
+      } else if (path === '/presets') {
+        setActiveView('presets');
+      } else if (path === '/guides') {
+        setActiveView('guides');
+      } else if (path === '/legal') {
+        setActiveView('legal');
+      } else if (path === '/tests') {
+        setActiveView('tests');
+      } else if (path.startsWith('/admin')) {
+        setActiveView('admin-seo-health');
+      } else {
+        // Unknown route -> render custom 404 page
+        setActiveView('404');
       }
-    } else if (path === '/bridge-table') {
-      setActiveView('bridge-table-detail');
-    } else if (path.startsWith('/trucks/')) {
-      const parts = path.replace('/trucks/', '').split('/');
-      if (parts.length >= 2 && parts[0] && parts[1]) {
-        openTruckStatePermutation(parts[0], parts[1]);
-      }
-    } else if (path.startsWith('/legal/')) {
-      const raw = path.replace('/legal/', '').replace(/\/$/, '');
-      const stateSlug = raw.replace('-dot-weight-laws', '');
-      if (stateSlug) {
-        openLegalStatePermutation(stateSlug);
-      }
-    } else if (path === '/cat-scale-decoder') {
-      setActiveView('cat-scale-decoder');
-    } else if (path === '/pseo-matrix' || path === '/sitemap-matrix') {
-      setActiveView('pseo-matrix');
-    } else if (path === '/legal-states' || path === '/states') {
-      setActiveView('states');
-    } else if (path === '/presets') {
-      setActiveView('presets');
-    } else if (path === '/guides') {
-      setActiveView('guides');
-    } else if (path.startsWith('/admin')) {
-      setActiveView('admin-seo-health');
-    }
+    };
+
+    handleRoute();
+    window.addEventListener('popstate', handleRoute);
+    return () => window.removeEventListener('popstate', handleRoute);
   }, [openBridgeTablePermutation, openTruckStatePermutation, openLegalStatePermutation, setActiveView]);
+
+  // Keep Canonical Link Tag synchronized with current URL path
+  useEffect(() => {
+    const canonicalLink = document.getElementById('canonical-url');
+    if (canonicalLink) {
+      const currentPath = window.location.pathname;
+      canonicalLink.setAttribute('href', `https://dotweight.com${currentPath}`);
+    }
+  }, [activeView]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
@@ -133,6 +163,8 @@ export default function App() {
         {activeView === 'pseo-matrix' && <PseoMatrixView />}
 
         {activeView === 'admin-seo-health' && <SeoHealthAdminView />}
+
+        {activeView === '404' && <NotFoundView />}
       </main>
 
       {/* Global Footer */}
