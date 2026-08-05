@@ -44,23 +44,36 @@ export default function App() {
         const axles = parseInt(parts[0], 10) || 5;
         const spacing = parseInt(parts[1], 10) || 51;
         openBridgeTablePermutation(axles, spacing);
+      } else {
+        setActiveView('bridge-table-detail');
       }
+    } else if (path === '/bridge-table') {
+      setActiveView('bridge-table-detail');
     } else if (path.startsWith('/trucks/')) {
       const parts = path.replace('/trucks/', '').split('/');
-      if (parts.length >= 2) {
+      if (parts.length >= 2 && parts[0] && parts[1]) {
         openTruckStatePermutation(parts[0], parts[1]);
       }
-    } else if (path.startsWith('/legal/') && path.includes('-dot-weight-laws')) {
-      const stateSlug = path.replace('/legal/', '').replace('-dot-weight-laws', '');
-      openLegalStatePermutation(stateSlug);
+    } else if (path.startsWith('/legal/')) {
+      const raw = path.replace('/legal/', '').replace(/\/$/, '');
+      const stateSlug = raw.replace('-dot-weight-laws', '');
+      if (stateSlug) {
+        openLegalStatePermutation(stateSlug);
+      }
     } else if (path === '/cat-scale-decoder') {
       setActiveView('cat-scale-decoder');
     } else if (path === '/pseo-matrix' || path === '/sitemap-matrix') {
       setActiveView('pseo-matrix');
+    } else if (path === '/legal-states' || path === '/states') {
+      setActiveView('states');
+    } else if (path === '/presets') {
+      setActiveView('presets');
+    } else if (path === '/guides') {
+      setActiveView('guides');
     } else if (path.startsWith('/admin')) {
       setActiveView('admin-seo-health');
     }
-  }, []);
+  }, [openBridgeTablePermutation, openTruckStatePermutation, openLegalStatePermutation, setActiveView]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
