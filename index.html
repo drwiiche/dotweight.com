@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary SEO Metadata -->
+    <title>AxleGuard | Federal Bridge Formula & DOT Axle Weight Calculator</title>
+    <meta name="description" content="Instant visual axle-weight compliance calculator checking Federal Bridge Formula B, single/tandem limits, state-by-state rules, and interactive truck axle visualizer." />
+    <meta name="keywords" content="Federal bridge formula calculator, DOT axle weight calculator, bridge formula B, axle weight limits, 53 semi truck weight, steer drive trailer axle weights, CAT scale ticket calculator, kingpin law KPRA" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="AxleGuard Systems" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="canonical" href="https://axleguard.app/" />
+
+    <!-- Google Fonts Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://axleguard.app/" />
+    <meta property="og:title" content="AxleGuard | Federal Bridge Formula & DOT Axle Weight Calculator" />
+    <meta property="og:description" content="Calculate Federal Bridge Formula B compliance in real-time. Verify single, tandem, tridem, and GVW limits across all 50 states." />
+    <meta property="og:image" content="https://axleguard.app/og-image.jpg" />
+
+    <!-- Twitter Card Metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AxleGuard | Federal Bridge Formula & DOT Axle Weight Calculator" />
+    <meta name="twitter:description" content="Instant visual axle-weight compliance calculator checking 23 CFR § 658.17 Federal Bridge Formula B." />
+
+    <!-- Structured Data: JSON-LD WebApplication & FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://axleguard.app/#webapp",
+          "name": "AxleGuard DOT Axle & Bridge Formula Calculator",
+          "url": "https://axleguard.app/",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires JavaScript",
+          "description": "Professional DOT Axle Weight & Federal Bridge Formula B compliance calculator built for commercial drivers and fleet dispatchers.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://axleguard.app/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the Federal Bridge Formula B?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The Federal Bridge Formula B W = 500 * [LN/(N-1) + 12N + 36] determines the maximum legal weight carried on any consecutive group of truck axles based on axle count (N) and distance in feet (L)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the statutory limit for a standard tandem axle group?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Under federal law (23 CFR § 658.17), a standard tandem axle group spaced between 40 inches and 96 inches is capped at 34,000 lbs."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-sans antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

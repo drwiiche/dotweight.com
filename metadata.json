@@ -1,0 +1,6 @@
+{
+  "name": "AxleGuard - DOT Axle & Federal Bridge Calculator",
+  "description": "Instant visual axle-weight compliance calculator checking Federal Bridge Formula B, single/tandem limits, state-by-state rules, and interactive truck axle visualizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
