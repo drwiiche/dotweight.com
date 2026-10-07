@@ -114,7 +114,7 @@ export default function App() {
     if (canonicalLink) {
       let currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
       currentPath = currentPath.replace(/-dot-weight-laws$/, '');
-      canonicalLink.setAttribute('href', `https://dotweight.com${currentPath}`);
+      canonicalLink.setAttribute('href', `https://www.dotweight.com${currentPath}`);
     }
   }, [activeView, activePseoVehicleSlug, activePseoStateSlug, activeBridgeAxles, activeBridgeSpacing]);
 

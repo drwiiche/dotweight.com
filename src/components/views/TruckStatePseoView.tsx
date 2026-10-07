@@ -101,6 +101,11 @@ export function TruckStatePseoView({ vehicleSlug = '53-foot-semi-truck', stateSl
             <span className="text-[10px] font-bold text-slate-600 bg-white border border-[#dee3e9] px-2.5 py-0.5 rounded-full inline-block">
               {evaluation.totalGVWLbs.toLocaleString()} / {stateReg.maxGVWStandardLbs.toLocaleString()} lbs GVW
             </span>
+            {evaluation.overallStatus !== 'COMPLIANT' && (
+              <span className="block text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-1.5 mt-2 font-medium">
+                Permit Required: Exceeds non-permit Bridge Formula. May operate legally under {stateReg.state} vocational permit.
+              </span>
+            )}
           </div>
         </div>
 

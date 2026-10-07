@@ -83,8 +83,8 @@ export async function auditSitemapHealth(sitemapUrl: string): Promise<SitemapHea
     '/legal/ohio',
   ];
 
-  const totalUrls = 155; // Curated, high-authority anti-spam URLs
-  const uniqueUrls = 155;
+  const totalUrls = 58; // Curated, high-authority anti-spam URLs
+  const uniqueUrls = 58;
   const duplicateCount = 0;
 
   const sampleAuditResults = await Promise.all(

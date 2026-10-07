@@ -92,7 +92,7 @@ export const VEHICLE_PRESETS: VehiclePreset[] = [
     recommendedGVW: 60000,
     svgType: 'dump_4axle',
     axles: [
-      { id: 'ax-1', name: 'Heavy Front Steer', groupName: 'steer', positionInFeet: 0, weightLbs: 18000, isSteer: true },
+      { id: 'ax-1', name: 'Heavy Front Steer', groupName: 'steer', positionInFeet: 0, weightLbs: 16000, isSteer: true },
       { id: 'ax-2', name: 'Pusher Lift Axle', groupName: 'pusher', positionInFeet: 11.5, weightLbs: 10000, isLiftAxle: true },
       { id: 'ax-3', name: 'Drive Axle 1', groupName: 'drive', positionInFeet: 17.5, weightLbs: 17000 },
       { id: 'ax-4', name: 'Drive Axle 2', groupName: 'drive', positionInFeet: 21.8, weightLbs: 17000 },

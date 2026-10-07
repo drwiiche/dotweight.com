@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Base domain configuration
-const BASE_URL = 'https://dotweight.com';
+// Base domain configuration - aligned with primary www production domain
+const BASE_URL = 'https://www.dotweight.com';
 
 const STATES = [
   'federal-interstate', 'alabama', 'alaska', 'arizona', 'arkansas', 'california',
@@ -20,39 +20,11 @@ const STATES = [
   'west-virginia', 'wisconsin', 'wyoming'
 ];
 
-// Top commercial vehicle presets with high search demand
-const TOP_PRESETS = [
-  '53-foot-semi-truck',
-  '4-axle-dump-truck-pusher',
-  'spread-axle-flatbed-10ft',
-  '3-axle-straight-truck',
-  'hotshot-dually-gooseneck',
-  '4-axle-concrete-mixer-pusher'
-];
-
-// Key Interstate Freight Corridor States (high-intent search volume)
-const KEY_FREIGHT_STATES = [
-  'federal-interstate', 'california', 'texas', 'florida', 'ohio',
-  'pennsylvania', 'illinois', 'washington', 'georgia', 'michigan',
-  'new-york', 'north-carolina', 'indiana', 'tennessee', 'arizona'
-];
-
-// Benchmark Bridge Table combinations (common wheelbase spacings)
-const KEY_BRIDGE_COMBINATIONS = [
-  { axles: 5, length: 51 }, // Standard 53ft semi
-  { axles: 4, length: 36 }, // Consecutive tandems
-  { axles: 3, length: 22 }, // 3-axle straight truck
-  { axles: 4, length: 23 }, // 4-axle dump
-  { axles: 6, length: 45 }, // Heavy haul dump
-  { axles: 7, length: 55 }, // Lowboy RGN
-  { axles: 8, length: 60 }  // B-Train doubles
-];
-
 function generateSitemap() {
   const urls = [];
   const today = new Date().toISOString().split('T')[0];
 
-  // 1. Core High-Priority Hub Pages
+  // 1. Core High-Priority Pages (7 URLs)
   const corePages = [
     { path: '/', priority: '1.0', changefreq: 'daily' },
     { path: '/cat-scale-decoder', priority: '0.9', changefreq: 'weekly' },
@@ -63,7 +35,7 @@ function generateSitemap() {
     { path: '/bridge-table', priority: '0.8', changefreq: 'weekly' },
   ];
 
-  corePages.forEach(p => {
+  corePages.forEach((p) => {
     urls.push(`  <url>
     <loc>${BASE_URL}${p.path}</loc>
     <lastmod>${today}</lastmod>
@@ -72,35 +44,13 @@ function generateSitemap() {
   </url>`);
   });
 
-  // 2. All 51 State Legal Statute Pages (Direct Canonical URLs without redirect)
-  STATES.forEach(slug => {
+  // 2. All 51 Official State Legal Statute Pages (51 URLs)
+  STATES.forEach((slug) => {
     urls.push(`  <url>
     <loc>${BASE_URL}/legal/${slug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>`);
-  });
-
-  // 3. High-Intent Commercial Truck x State Pages
-  TOP_PRESETS.forEach(preset => {
-    KEY_FREIGHT_STATES.forEach(state => {
-      urls.push(`  <url>
-    <loc>${BASE_URL}/trucks/${preset}/${state}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>`);
-    });
-  });
-
-  // 4. Benchmark Bridge Formula Calculation Pages
-  KEY_BRIDGE_COMBINATIONS.forEach(({ axles, length }) => {
-    urls.push(`  <url>
-    <loc>${BASE_URL}/bridge-table/${axles}-axles-${length}-ft</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>`);
   });
 
@@ -124,7 +74,7 @@ Sitemap: ${BASE_URL}/sitemap.xml
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml, 'utf8');
   fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt, 'utf8');
 
-  console.log(`Successfully generated curated, anti-spam sitemap.xml with ${urls.length} verified URLs in /public/sitemap.xml`);
+  console.log(`Successfully generated focused, high-authority sitemap.xml with ${urls.length} URLs in /public/sitemap.xml`);
   console.log(`Successfully generated robots.txt in /public/robots.txt`);
 }
 

@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://dotweight.com/sitemap.xml
+Sitemap: https://www.dotweight.com/sitemap.xml

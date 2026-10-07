@@ -1,6 +1,6 @@
 import { validateSchema } from '../seo/schemaValidator';
 
-const BASE_DOMAIN = 'https://dotweight.com';
+const BASE_DOMAIN = 'https://www.dotweight.com';
 
 export interface PseoMetadataParams {
   title: string;
