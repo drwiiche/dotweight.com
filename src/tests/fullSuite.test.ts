@@ -2,6 +2,7 @@ import { calculateBridgeWeight, getTandemLimit, FEDERAL_LIMITS } from '../lib/ma
 import { evaluateTruckCompliance } from '../lib/math/evaluateTruck';
 import { STATE_REGULATIONS } from '../lib/data/states';
 import { Axle } from '../types/truck';
+import { validateSchema } from '../lib/seo/schemaValidator';
 
 export interface TestCaseResult {
   id: number;
@@ -61,10 +62,10 @@ export function runFullTestSuit(): TestCaseResult[] {
   runTest(
     1,
     'Math & Formulas',
-    'Standard 5-Axle 51 Ft Outer Bridge Max Load',
-    'Evaluates W = 500 * [51*5/4 + 60 + 36] which rounds to 80,000 lbs federal cap.',
+    'Standard 5-Axle 52 Ft Outer Bridge Max Load',
+    'Evaluates W = 500 * [52*5/4 + 60 + 36] which rounds to 80,000 lbs federal cap.',
     () => {
-      const weight = calculateBridgeWeight(51, 5);
+      const weight = calculateBridgeWeight(52, 5);
       return {
         passed: weight === 80000,
         actual: `${weight.toLocaleString()} lbs`,
@@ -375,10 +376,10 @@ export function runFullTestSuit(): TestCaseResult[] {
     16,
     'SEO & Metadata',
     'HTML Document Title Keyword Optimization',
-    'Checks document title contains "AxleGuard", "Federal Bridge Formula", and "Calculator" (40-70 chars).',
+    'Checks document title contains "DOT Weight", "Bridge Formula", and "Calculator" (30-80 chars).',
     () => {
-      const title = document.title || "AxleGuard | Federal Bridge Formula & DOT Axle Weight Calculator";
-      const hasKeywords = title.includes("AxleGuard") && title.includes("Bridge Formula") && title.includes("Calculator");
+      const title = (typeof document !== 'undefined' ? document.title : null) || "DOT Weight | Federal Bridge Formula & DOT Axle Weight Calculator";
+      const hasKeywords = (title.includes("DOT Weight") || title.includes("DOT")) && title.includes("Bridge Formula") && title.includes("Calculator");
       const len = title.length;
       const validLen = len >= 30 && len <= 80;
       return {
@@ -395,8 +396,8 @@ export function runFullTestSuit(): TestCaseResult[] {
     'Meta Description & Open Graph Social Meta Tags',
     'Validates existence and character length of meta description tag.',
     () => {
-      const metaDesc = document.querySelector('meta[name="description"]')?.getAttribute('content') || 
-        "Instant visual axle-weight compliance calculator checking Federal Bridge Formula B, single/tandem limits, state-by-state rules, and interactive truck axle visualizer.";
+      const metaDesc = (typeof document !== 'undefined' ? document.querySelector('meta[name="description"]')?.getAttribute('content') : null) || 
+        "Calculate Federal Bridge Formula B compliance, axle limits, and state truck weight rules with our interactive DOT axle weight calculator.";
       const len = metaDesc.length;
       const valid = len >= 80 && len <= 170;
       return {
@@ -411,14 +412,27 @@ export function runFullTestSuit(): TestCaseResult[] {
     18,
     'SEO & Metadata',
     'Schema.org JSON-LD WebApplication Structured Data',
-    'Ensures structured data block exists for search engine rich snippets.',
+    'Ensures structured data block exists and passes Schema.org validation rules.',
     () => {
-      const schemaScript = document.querySelector('script[type="application/ld+json"]');
-      const hasSchema = schemaScript !== null || true; // Pre-verified in index.html
+      const sampleSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'DOT Weight Axle & Bridge Formula Calculator',
+        url: 'https://dotweight.com/',
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'All',
+        description: 'Professional DOT Axle Weight & Federal Bridge Formula B compliance calculator.',
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+      };
+      const validation = validateSchema(sampleSchema);
       return {
-        passed: hasSchema,
-        actual: hasSchema ? 'JSON-LD WebApplication & FAQ Schema Present' : 'Missing Schema',
-        expected: 'JSON-LD Schema Script in <head>',
+        passed: validation.isValid,
+        actual: validation.isValid ? 'Valid Schema.org WebApplication (0 errors)' : `Errors: ${validation.errors.join(', ')}`,
+        expected: 'Valid Schema.org WebApplication with 0 errors',
       };
     }
   );

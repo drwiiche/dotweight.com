@@ -58,7 +58,7 @@ export function CatScaleDecoderView() {
     ticketNum
   )}&steer=${steerWeight}&drive=${driveWeight}&trailer=${trailerWeight}&state=${selectedStateSlug}`;
 
-  const bbcodeSnippet = `[url=${badgeShareUrl}][img]https://axleguard.org/badge/${ticketNum}.png[/img][/url]\n[b]CAT Scale Verification:[/b] Ticket #${ticketNum} - ${
+  const bbcodeSnippet = `[url=${badgeShareUrl}][img]https://dotweight.com/badge/${ticketNum}.png[/img][/url]\n[b]CAT Scale Verification:[/b] Ticket #${ticketNum} - ${
     isFullyCompliant ? 'PASS (80k Legal)' : 'FAIL (Overweight)'
   } - Gross: ${totalGross.toLocaleString()} lbs (${selectedState.state})`;
 

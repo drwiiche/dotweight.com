@@ -53,7 +53,7 @@ interface TruckStoreState {
   isPrintModalOpen: boolean;
 
   // Actions
-  setActiveView: (view: ActiveView) => void;
+  setActiveView: (view: ActiveView, updateUrl?: boolean) => void;
   selectPreset: (presetId: string) => void;
   selectState: (stateSlug: string) => void;
   
@@ -78,9 +78,9 @@ interface TruckStoreState {
   openLegalTab: (tab: 'disclaimer' | 'privacy' | 'terms') => void;
 
   // pSEO Permutation Setters
-  openTruckStatePermutation: (vSlug: string, sSlug: string) => void;
-  openBridgeTablePermutation: (axles: number, spacing: number) => void;
-  openLegalStatePermutation: (sSlug: string) => void;
+  openTruckStatePermutation: (vSlug: string, sSlug: string, updateUrl?: boolean) => void;
+  openBridgeTablePermutation: (axles: number, spacing: number, updateUrl?: boolean) => void;
+  openLegalStatePermutation: (sSlug: string, updateUrl?: boolean) => void;
 
   // Calculated Compliance Result (derived)
   getComplianceResult: () => ComplianceResult;
@@ -88,21 +88,208 @@ interface TruckStoreState {
   getSelectedPreset: () => VehiclePreset | undefined;
 }
 
+const VIEW_PATHS: Partial<Record<ActiveView, string>> = {
+  'calculator': '/',
+  'presets': '/presets',
+  'states': '/legal-states',
+  'guides': '/guides',
+  'legal': '/legal',
+  'tests': '/tests',
+  'cat-scale-decoder': '/cat-scale-decoder',
+  'pseo-matrix': '/pseo-matrix',
+  'bridge-table-detail': '/bridge-table',
+  'admin-seo-health': '/admin/seo-health',
+};
+
+function parseInitialRoute(): {
+  view: ActiveView;
+  vehicleSlug: string;
+  stateSlug: string;
+  bridgeAxles: number;
+  bridgeSpacing: number;
+} {
+  if (typeof window === 'undefined') {
+    return {
+      view: 'calculator',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+
+  if (path === '/') {
+    return {
+      view: 'calculator',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path.startsWith('/trucks/')) {
+    const parts = path.replace('/trucks/', '').split('/').filter(Boolean);
+    if (parts.length >= 2) {
+      return {
+        view: 'truck-state-detail',
+        vehicleSlug: parts[0].toLowerCase(),
+        stateSlug: parts[1].toLowerCase(),
+        bridgeAxles: 5,
+        bridgeSpacing: 51,
+      };
+    }
+  }
+
+  if (path.startsWith('/legal/')) {
+    const raw = path.replace('/legal/', '').replace(/-dot-weight-laws$/, '').toLowerCase();
+    return {
+      view: 'legal-state-detail',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: raw || 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path.startsWith('/bridge-table/')) {
+    const parts = path.replace('/bridge-table/', '').split('-ft')[0].split('-axles-');
+    if (parts.length === 2) {
+      return {
+        view: 'bridge-table-detail',
+        vehicleSlug: '53-foot-semi-truck',
+        stateSlug: 'california',
+        bridgeAxles: parseInt(parts[0], 10) || 5,
+        bridgeSpacing: parseInt(parts[1], 10) || 51,
+      };
+    }
+    return {
+      view: 'bridge-table-detail',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/cat-scale-decoder') {
+    return {
+      view: 'cat-scale-decoder',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/pseo-matrix' || path === '/sitemap-matrix') {
+    return {
+      view: 'pseo-matrix',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/legal-states' || path === '/states') {
+    return {
+      view: 'states',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/presets') {
+    return {
+      view: 'presets',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/guides') {
+    return {
+      view: 'guides',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/bridge-table') {
+    return {
+      view: 'bridge-table-detail',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/legal') {
+    return {
+      view: 'legal',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path === '/tests') {
+    return {
+      view: 'tests',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  if (path.startsWith('/admin')) {
+    return {
+      view: 'admin-seo-health',
+      vehicleSlug: '53-foot-semi-truck',
+      stateSlug: 'california',
+      bridgeAxles: 5,
+      bridgeSpacing: 51,
+    };
+  }
+
+  return {
+    view: '404',
+    vehicleSlug: '53-foot-semi-truck',
+    stateSlug: 'california',
+    bridgeAxles: 5,
+    bridgeSpacing: 51,
+  };
+}
+
+const initialRoute = parseInitialRoute();
+
 export const useTruckStore = create<TruckStoreState>((set, get) => ({
-  activeView: 'calculator',
+  activeView: initialRoute.view,
   activePresetSlug: VEHICLE_PRESETS[0].slug,
-  activeStateSlug: 'california',
+  activeStateSlug: initialRoute.stateSlug,
   activeGuideSlug: 'federal-bridge-formula-b-math-guide',
   activeLegalTab: 'disclaimer',
 
-  activePseoVehicleSlug: '4-axle-dump-truck-pusher',
-  activePseoStateSlug: 'ohio',
-  activeBridgeAxles: 5,
-  activeBridgeSpacing: 51,
+  activePseoVehicleSlug: initialRoute.vehicleSlug,
+  activePseoStateSlug: initialRoute.stateSlug,
+  activeBridgeAxles: initialRoute.bridgeAxles,
+  activeBridgeSpacing: initialRoute.bridgeSpacing,
 
   selectedPresetId: VEHICLE_PRESETS[0].id,
   axles: JSON.parse(JSON.stringify(VEHICLE_PRESETS[0].axles)),
-  selectedStateSlug: 'federal-interstate',
+  selectedStateSlug: initialRoute.stateSlug || 'federal-interstate',
   customMaxGVW: undefined,
 
   catTicket: {
@@ -113,7 +300,15 @@ export const useTruckStore = create<TruckStoreState>((set, get) => ({
 
   isPrintModalOpen: false,
 
-  setActiveView: (view) => set({ activeView: view }),
+  setActiveView: (view, updateUrl = true) => {
+    if (updateUrl && typeof window !== 'undefined') {
+      const targetPath = VIEW_PATHS[view];
+      if (targetPath && window.location.pathname !== targetPath) {
+        window.history.pushState({}, '', targetPath);
+      }
+    }
+    set({ activeView: view });
+  },
 
   selectPreset: (presetId) => {
     const preset = VEHICLE_PRESETS.find(p => p.id === presetId);
@@ -209,30 +404,71 @@ export const useTruckStore = create<TruckStoreState>((set, get) => ({
 
   setPrintModalOpen: (open) => set({ isPrintModalOpen: open }),
 
-  openPresetDetail: (slug) => set({ activeView: 'preset-detail', activePresetSlug: slug }),
-  openStateDetail: (slug) => set({ activeView: 'state-detail', activeStateSlug: slug }),
-  openGuideDetail: (slug) => set({ activeView: 'guide-detail', activeGuideSlug: slug }),
-  openLegalTab: (tab) => set({ activeView: 'legal', activeLegalTab: tab }),
+  openPresetDetail: (slug) => {
+    if (typeof window !== 'undefined' && window.location.pathname !== '/presets') {
+      window.history.pushState({}, '', '/presets');
+    }
+    set({ activeView: 'preset-detail', activePresetSlug: slug });
+  },
 
-  openTruckStatePermutation: (vSlug, sSlug) =>
+  openStateDetail: (slug) => {
+    if (typeof window !== 'undefined' && window.location.pathname !== '/legal-states') {
+      window.history.pushState({}, '', '/legal-states');
+    }
+    set({ activeView: 'state-detail', activeStateSlug: slug });
+  },
+
+  openGuideDetail: (slug) => {
+    if (typeof window !== 'undefined' && window.location.pathname !== '/guides') {
+      window.history.pushState({}, '', '/guides');
+    }
+    set({ activeView: 'guide-detail', activeGuideSlug: slug });
+  },
+
+  openLegalTab: (tab) => {
+    if (typeof window !== 'undefined' && window.location.pathname !== '/legal') {
+      window.history.pushState({}, '', '/legal');
+    }
+    set({ activeView: 'legal', activeLegalTab: tab });
+  },
+
+  openTruckStatePermutation: (vSlug, sSlug, updateUrl = true) => {
+    const cleanV = vSlug.toLowerCase();
+    const cleanS = sSlug.toLowerCase();
+    const targetUrl = `/trucks/${cleanV}/${cleanS}`;
+    if (updateUrl && typeof window !== 'undefined' && window.location.pathname !== targetUrl) {
+      window.history.pushState({}, '', targetUrl);
+    }
     set({
       activeView: 'truck-state-detail',
-      activePseoVehicleSlug: vSlug,
-      activePseoStateSlug: sSlug,
-    }),
+      activePseoVehicleSlug: cleanV,
+      activePseoStateSlug: cleanS,
+    });
+  },
 
-  openBridgeTablePermutation: (axles, spacing) =>
+  openBridgeTablePermutation: (axles, spacing, updateUrl = true) => {
+    const targetUrl = `/bridge-table/${axles}-axles-${spacing}-ft`;
+    if (updateUrl && typeof window !== 'undefined' && window.location.pathname !== targetUrl) {
+      window.history.pushState({}, '', targetUrl);
+    }
     set({
       activeView: 'bridge-table-detail',
       activeBridgeAxles: axles,
       activeBridgeSpacing: spacing,
-    }),
+    });
+  },
 
-  openLegalStatePermutation: (sSlug) =>
+  openLegalStatePermutation: (sSlug, updateUrl = true) => {
+    const cleanS = sSlug.replace(/-dot-weight-laws$/, '').toLowerCase();
+    const targetUrl = `/legal/${cleanS}`;
+    if (updateUrl && typeof window !== 'undefined' && window.location.pathname !== targetUrl) {
+      window.history.pushState({}, '', targetUrl);
+    }
     set({
       activeView: 'legal-state-detail',
-      activePseoStateSlug: sSlug,
-    }),
+      activePseoStateSlug: cleanS,
+    });
+  },
 
   getSelectedStateReg: () => {
     const slug = get().selectedStateSlug;

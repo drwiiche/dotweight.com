@@ -51,8 +51,8 @@ export function evaluateTruckCompliance(
     });
   } else if (totalGVWLbs >= maxGVWLbs - 1000) {
     violations.push({
-      code: 'GVW_EXCEEDED',
-      title: 'Near GVW Limit Warning',
+      code: 'NEAR_GVW',
+      title: 'Near Maximum Capacity Advisory',
       message: `Total vehicle weight (${totalGVWLbs.toLocaleString()} lbs) is within 1,000 lbs of max limit (${maxGVWLbs.toLocaleString()} lbs).`,
       severity: 'warning',
       excessLbs: 0,
@@ -164,7 +164,7 @@ export function evaluateTruckCompliance(
 
   // Overall status evaluation
   const hasError = violations.some(v => v.severity === 'error');
-  const hasWarning = violations.some(v => v.severity === 'warning');
+  const hasWarning = violations.some(v => v.severity === 'warning' && v.code !== 'NEAR_GVW');
 
   let overallStatus: 'COMPLIANT' | 'WARNING' | 'OVERWEIGHT' = 'COMPLIANT';
   if (hasError) {

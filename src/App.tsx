@@ -22,6 +22,8 @@ import { CatScaleDecoderView } from './components/views/CatScaleDecoderView';
 import { PseoMatrixView } from './components/views/PseoMatrixView';
 import { SeoHealthAdminView } from './components/views/SeoHealthAdminView';
 import { NotFoundView } from './components/views/NotFoundView';
+import { STATE_REGULATIONS } from './lib/data/states';
+import { VEHICLE_PRESETS } from './lib/data/presets';
 
 export default function App() {
   const {
@@ -36,90 +38,109 @@ export default function App() {
     setActiveView,
   } = useTruckStore();
 
-  // Initial client-side URL route parsing on mount & window popstate
+  // Route dispatcher handling popstate (browser Back/Forward)
   useEffect(() => {
     const handleRoute = () => {
-      const path = window.location.pathname;
+      const rawPath = window.location.pathname.replace(/\/+$/, '') || '/';
 
-      if (path === '/' || path === '') {
-        setActiveView('calculator');
-      } else if (path.startsWith('/bridge-table/')) {
-        const parts = path.replace('/bridge-table/', '').split('-ft')[0].split('-axles-');
+      if (rawPath === '/' || rawPath === '') {
+        setActiveView('calculator', false);
+      } else if (rawPath.startsWith('/bridge-table/')) {
+        const parts = rawPath.replace('/bridge-table/', '').split('-ft')[0].split('-axles-');
         if (parts.length === 2) {
           const axles = parseInt(parts[0], 10) || 5;
           const spacing = parseInt(parts[1], 10) || 51;
-          openBridgeTablePermutation(axles, spacing);
+          openBridgeTablePermutation(axles, spacing, false);
         } else {
-          setActiveView('bridge-table-detail');
+          setActiveView('bridge-table-detail', false);
         }
-      } else if (path === '/bridge-table') {
-        setActiveView('bridge-table-detail');
-      } else if (path.startsWith('/trucks/')) {
-        const parts = path.replace('/trucks/', '').split('/');
-        if (parts.length >= 2 && parts[0] && parts[1]) {
-          openTruckStatePermutation(parts[0], parts[1]);
+      } else if (rawPath === '/bridge-table') {
+        setActiveView('bridge-table-detail', false);
+      } else if (rawPath.startsWith('/trucks/')) {
+        const parts = rawPath.replace('/trucks/', '').split('/').filter(Boolean);
+        if (parts.length >= 2) {
+          const vSlug = parts[0].toLowerCase();
+          const sSlug = parts[1].toLowerCase();
+          const validVehicle = VEHICLE_PRESETS.some((v) => v.slug === vSlug);
+          const validState = STATE_REGULATIONS.some((s) => s.slug === sSlug);
+          if (validVehicle && validState) {
+            openTruckStatePermutation(vSlug, sSlug, false);
+          } else {
+            setActiveView('404', false);
+          }
         } else {
-          setActiveView('404');
+          setActiveView('404', false);
         }
-      } else if (path.startsWith('/legal/')) {
-        const raw = path.replace('/legal/', '').replace(/\/$/, '');
-        const stateSlug = raw.replace('-dot-weight-laws', '');
-        if (stateSlug) {
-          openLegalStatePermutation(stateSlug);
+      } else if (rawPath.startsWith('/legal/')) {
+        const raw = rawPath.replace('/legal/', '').replace(/-dot-weight-laws$/, '').toLowerCase();
+        const validState = STATE_REGULATIONS.some((s) => s.slug === raw);
+        if (validState) {
+          // Normalize legacy URL format silently
+          if (window.location.pathname.includes('-dot-weight-laws')) {
+            window.history.replaceState({}, '', `/legal/${raw}`);
+          }
+          openLegalStatePermutation(raw, false);
         } else {
-          setActiveView('404');
+          setActiveView('404', false);
         }
-      } else if (path === '/cat-scale-decoder') {
-        setActiveView('cat-scale-decoder');
-      } else if (path === '/pseo-matrix' || path === '/sitemap-matrix') {
-        setActiveView('pseo-matrix');
-      } else if (path === '/legal-states' || path === '/states') {
-        setActiveView('states');
-      } else if (path === '/presets') {
-        setActiveView('presets');
-      } else if (path === '/guides') {
-        setActiveView('guides');
-      } else if (path === '/legal') {
-        setActiveView('legal');
-      } else if (path === '/tests') {
-        setActiveView('tests');
-      } else if (path.startsWith('/admin')) {
-        setActiveView('admin-seo-health');
+      } else if (rawPath === '/cat-scale-decoder') {
+        setActiveView('cat-scale-decoder', false);
+      } else if (rawPath === '/pseo-matrix' || rawPath === '/sitemap-matrix') {
+        setActiveView('pseo-matrix', false);
+      } else if (rawPath === '/legal-states' || rawPath === '/states') {
+        setActiveView('states', false);
+      } else if (rawPath === '/presets') {
+        setActiveView('presets', false);
+      } else if (rawPath === '/guides') {
+        setActiveView('guides', false);
+      } else if (rawPath === '/legal') {
+        setActiveView('legal', false);
+      } else if (rawPath === '/tests') {
+        setActiveView('tests', false);
+      } else if (rawPath.startsWith('/admin')) {
+        setActiveView('admin-seo-health', false);
       } else {
-        // Unknown route -> render custom 404 page
-        setActiveView('404');
+        setActiveView('404', false);
       }
     };
 
-    handleRoute();
     window.addEventListener('popstate', handleRoute);
     return () => window.removeEventListener('popstate', handleRoute);
   }, [openBridgeTablePermutation, openTruckStatePermutation, openLegalStatePermutation, setActiveView]);
 
   // Keep Canonical Link Tag synchronized with current URL path
   useEffect(() => {
-    const canonicalLink = document.getElementById('canonical-url');
+    const canonicalLink = document.getElementById('canonical-url') || document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
-      const currentPath = window.location.pathname;
+      let currentPath = window.location.pathname.replace(/\/+$/, '') || '/';
+      currentPath = currentPath.replace(/-dot-weight-laws$/, '');
       canonicalLink.setAttribute('href', `https://dotweight.com${currentPath}`);
     }
-  }, [activeView]);
+  }, [activeView, activePseoVehicleSlug, activePseoStateSlug, activeBridgeAxles, activeBridgeSpacing]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white">
-      
       {/* Global Responsive Navigation Header */}
       <Header />
 
       {/* Main App Canvas & Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-28 md:pb-12">
-        
         {/* Top AdSlot */}
         <AdSlot placement="TopBanner" />
 
         {/* View Router */}
         {activeView === 'calculator' && (
           <div className="space-y-6">
+            {/* Semantic Header for Search Engines */}
+            <header className="text-center max-w-3xl mx-auto space-y-2 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Federal Bridge Formula &amp; DOT Axle Weight Calculator
+              </h1>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Interactive compliance engine calculating 23 CFR § 658.17 Bridge Formula B, steer/drive/trailer tandem limits, and state weight rules.
+              </p>
+            </header>
+
             {/* 1. Interactive Mobile-First Canvas (SVG Truck Visualizer) */}
             <Visualizer />
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ArrowLeft, Calculator, ShieldCheck, Phone, ExternalLink, FileText, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Calculator, ShieldCheck, Phone, ExternalLink, FileText, CheckCircle2, AlertTriangle, Scale, BookOpen } from 'lucide-react';
 import { useTruckStore } from '../../store/useTruckStore';
 import { VEHICLE_PRESETS } from '../../lib/data/presets';
 import { STATE_REGULATIONS } from '../../lib/data/states';
@@ -12,11 +12,11 @@ interface Props {
   stateSlug?: string;
 }
 
-export function TruckStatePseoView({ vehicleSlug = '4-axle-dump-truck-pusher', stateSlug = 'ohio' }: Props) {
+export function TruckStatePseoView({ vehicleSlug = '53-foot-semi-truck', stateSlug = 'washington' }: Props) {
   const { selectPreset, selectState, setActiveView } = useTruckStore();
 
-  const vehicle = VEHICLE_PRESETS.find((v) => v.slug === vehicleSlug) || VEHICLE_PRESETS[1];
-  const stateReg = STATE_REGULATIONS.find((s) => s.slug === stateSlug) || STATE_REGULATIONS.find((s) => s.slug === 'ohio') || STATE_REGULATIONS[0];
+  const vehicle = VEHICLE_PRESETS.find((v) => v.slug === vehicleSlug) || VEHICLE_PRESETS[0];
+  const stateReg = STATE_REGULATIONS.find((s) => s.slug === stateSlug) || STATE_REGULATIONS.find((s) => s.slug === 'washington') || STATE_REGULATIONS[0];
   const statuteInfo = getStateStatuteInfo(stateReg.slug);
 
   // Evaluate precalculated compliance
@@ -25,27 +25,27 @@ export function TruckStatePseoView({ vehicleSlug = '4-axle-dump-truck-pusher', s
   useEffect(() => {
     injectPseoMetadata({
       title: `${vehicle.name} Max Weight Limits in ${stateReg.state}`,
-      description: `DOT weight regulations and Bridge Formula limits for a ${vehicle.name} in ${stateReg.state}. Statute: ${statuteInfo.statuteCitation}. Max legal GVW: ${stateReg.maxGVWStandardLbs.toLocaleString()} lbs.`,
+      description: `DOT weight limits and Federal Bridge Formula compliance for ${vehicle.name} in ${stateReg.state}. Statute: ${statuteInfo.statuteCitation}. Max GVW: ${stateReg.maxGVWStandardLbs.toLocaleString()} lbs.`,
       breadcrumbs: [
         { name: 'Home', item: '/' },
-        { name: 'Truck Configurations', item: '/trucks' },
-        { name: vehicle.name, item: `/trucks/${vehicle.slug}` },
-        { name: `${stateReg.state} Limits`, item: `/trucks/${vehicle.slug}/${stateReg.slug}` },
+        { name: 'Vehicle Presets', item: '/presets' },
+        { name: '50-State Regulations', item: '/legal-states' },
+        { name: `${vehicle.name} in ${stateReg.state}`, item: `/trucks/${vehicle.slug}/${stateReg.slug}` },
       ],
       datasetName: `${vehicle.name} - ${stateReg.state} DOT Weight Compliance Data`,
       datasetDescription: `Official DOT weight limit evaluation for ${vehicle.name} operating under ${stateReg.state} highway regulations (${statuteInfo.statuteCitation}).`,
       faqs: [
         {
-          question: `What is the maximum legal gross weight for a ${vehicle.name} in ${stateReg.state}?`,
-          answer: `The maximum legal non-permit gross vehicle weight (GVW) for a ${vehicle.name} in ${stateReg.state} is ${stateReg.maxGVWStandardLbs.toLocaleString()} lbs, subject to single and tandem axle group limits.`,
+          question: `What is the maximum legal gross vehicle weight for a ${vehicle.name} in ${stateReg.state}?`,
+          answer: `Under ${stateReg.state} DOT regulations, a standard non-permitted ${vehicle.name} has a maximum gross vehicle weight (GVW) limit of ${stateReg.maxGVWStandardLbs.toLocaleString()} lbs, subject to steer, tandem, and Federal Bridge Formula B restrictions.`,
         },
         {
-          question: `What are the pusher axle regulations for ${vehicle.name} in ${stateReg.state}?`,
-          answer: `${statuteInfo.pusherAxleRegulation}`,
+          question: `What are the legal tandem and single axle weight limits in ${stateReg.state}?`,
+          answer: `In ${stateReg.state}, single axles are restricted to ${stateReg.singleAxleLimitLbs.toLocaleString()} lbs and tandem axle groups are limited to ${stateReg.tandemAxleLimitLbs.toLocaleString()} lbs without an oversize/overweight permit.`,
         },
         {
-          question: `What state law governs truck weight limits in ${stateReg.state}?`,
-          answer: `${stateReg.state} truck weight limits are dictated by ${statuteInfo.statuteCitation}. Permits are required when gross weight exceeds ${statuteInfo.permitTriggerThreshold}.`,
+          question: `What statute governs truck axle weights in ${stateReg.state}?`,
+          answer: `Commercial vehicle weight restrictions in ${stateReg.state} are governed by ${statuteInfo.statuteCitation}. Special permits are required when gross weight exceeds ${statuteInfo.permitTriggerThreshold}.`,
         },
       ],
     });
@@ -79,18 +79,18 @@ export function TruckStatePseoView({ vehicleSlug = '4-axle-dump-truck-pusher', s
           <div>
             <div className="inline-flex items-center space-x-2 bg-[#0064e0]/10 text-[#0064e0] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight mb-3">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Programmatic SEO Data Payload</span>
+              <span>DOT Axle Compliance Analysis</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0a1317]">
               {vehicle.name} Weight Limit in {stateReg.state}
             </h1>
             <p className="text-slate-600 text-sm mt-2 max-w-2xl">
-              Official statutory specs, lift axle regulations, and bridge formula calculations under <span className="font-bold text-[#0a1317]">{statuteInfo.statuteCitation}</span>.
+              Official statutory limits, axle load distribution, and 23 CFR § 658.17 Federal Bridge Formula B compliance under <span className="font-bold text-[#0a1317]">{statuteInfo.statuteCitation}</span>.
             </p>
           </div>
 
           <div className="bg-[#f1f4f7] border border-[#dee3e9] p-5 rounded-2xl text-center shrink-0 min-w-[210px]">
-            <span className="text-[11px] font-bold text-slate-500 uppercase block tracking-tight">Overall Status</span>
+            <span className="text-[11px] font-bold text-slate-500 uppercase block tracking-tight">Compliance Status</span>
             <span
               className={`text-lg font-mono font-bold block my-1 ${
                 evaluation.overallStatus === 'COMPLIANT' ? 'text-[#31a24c]' : 'text-[#e41e3f]'
@@ -99,12 +99,12 @@ export function TruckStatePseoView({ vehicleSlug = '4-axle-dump-truck-pusher', s
               {evaluation.overallStatus === 'COMPLIANT' ? '100% COMPLIANT' : 'OVERWEIGHT WARNING'}
             </span>
             <span className="text-[10px] font-bold text-slate-600 bg-white border border-[#dee3e9] px-2.5 py-0.5 rounded-full inline-block">
-              {evaluation.totalGVWLbs.toLocaleString()} / {stateReg.maxGVWStandardLbs.toLocaleString()} lbs
+              {evaluation.totalGVWLbs.toLocaleString()} / {stateReg.maxGVWStandardLbs.toLocaleString()} lbs GVW
             </span>
           </div>
         </div>
 
-        {/* 4 Unique Data Payload Cards (Anti-Thin-Content Engine) */}
+        {/* 4 Data Payload Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <div className="p-4 bg-[#f1f4f7] border border-[#dee3e9] rounded-2xl space-y-1">
             <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-tight">Statute Citation</span>
@@ -164,7 +164,7 @@ export function TruckStatePseoView({ vehicleSlug = '4-axle-dump-truck-pusher', s
             <thead className="bg-[#f1f4f7] text-[#0a1317] font-bold uppercase tracking-tight border-b border-[#dee3e9]">
               <tr>
                 <th className="p-3">Axle #</th>
-                <th className="p-3">Axle Name & Category</th>
+                <th className="p-3">Axle Name &amp; Category</th>
                 <th className="p-3">Position (ft)</th>
                 <th className="p-3">Baseline Load (lbs)</th>
               </tr>
@@ -187,8 +187,9 @@ export function TruckStatePseoView({ vehicleSlug = '4-axle-dump-truck-pusher', s
 
       {/* Precalculated Subgroup Compliance Table */}
       <div className="bg-white border border-[#dee3e9] rounded-3xl p-6 shadow-sm space-y-4">
-        <h2 className="text-base font-bold text-[#0a1317] tracking-tight">
-          Bridge Formula Subgroup Compliance in {stateReg.state}
+        <h2 className="text-base font-bold text-[#0a1317] tracking-tight flex items-center space-x-2">
+          <Scale className="w-5 h-5 text-[#0064e0]" />
+          <span>Bridge Formula Subgroup Compliance in {stateReg.state}</span>
         </h2>
 
         <div className="overflow-x-auto rounded-2xl border border-[#dee3e9]">
@@ -227,6 +228,17 @@ export function TruckStatePseoView({ vehicleSlug = '4-axle-dump-truck-pusher', s
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Helpful Driver Compliance Guide Section */}
+      <div className="bg-white border border-[#dee3e9] rounded-3xl p-6 shadow-sm space-y-3">
+        <h3 className="text-sm font-bold text-[#0a1317] flex items-center space-x-2">
+          <BookOpen className="w-4 h-4 text-[#0064e0]" />
+          <span>Driver Pre-Trip Tips for {stateReg.state} Commercial Corridors</span>
+        </h3>
+        <p className="text-xs text-slate-600 leading-relaxed">
+          Before entering commercial scale inspection facilities in {stateReg.state}, verify your tandem axle spacing (standard 40–96 inches) and ensure kingpin-to-rear-axle (KPRA) settings adhere to local route limits. If using an Auxiliary Power Unit (APU), verify whether {stateReg.state} offers a 400–550 lb weight exemption certification.
+        </p>
       </div>
     </div>
   );

@@ -74,7 +74,7 @@ export const useAdSenseStore = create<AdSenseState>()(
       updateSettings: (newSettings) => set((state) => ({ ...state, ...newSettings })),
     }),
     {
-      name: 'axleguard-adsense-config',
+      name: 'dotweight-adsense-config',
     }
   )
 );

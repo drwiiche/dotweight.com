@@ -31,7 +31,7 @@ export function SeoHealthAdminView() {
 
   const runAudit = async () => {
     setLoading(true);
-    const result = await auditSitemapHealth('https://axleguard.org/sitemap.xml');
+    const result = await auditSitemapHealth('https://dotweight.com/sitemap.xml');
     setReport(result);
     setLoading(false);
   };
@@ -521,7 +521,7 @@ export function SeoHealthAdminView() {
               <span>Sample Route Inspection Results ({report?.sampleAuditResults.length || 0} Audited)</span>
             </h2>
             <p className="text-xs text-slate-500">
-              Target Sitemap: <code className="font-mono text-[#0064e0]">https://axleguard.org/sitemap.xml</code>
+              Target Sitemap: <code className="font-mono text-[#0064e0]">https://dotweight.com/sitemap.xml</code>
             </p>
           </div>
           <span className="text-xs font-mono font-bold text-[#31a24c] bg-[#31a24c]/10 border border-[#31a24c]/30 px-3 py-1 rounded-full">

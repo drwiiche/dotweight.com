@@ -14,8 +14,8 @@ export const VEHICLE_PRESETS: VehiclePreset[] = [
       { id: 'ax-1', name: 'Steer Axle', groupName: 'steer', positionInFeet: 0, weightLbs: 12000, isSteer: true },
       { id: 'ax-2', name: 'Drive Axle 1', groupName: 'drive', positionInFeet: 16.5, weightLbs: 17000 },
       { id: 'ax-3', name: 'Drive Axle 2', groupName: 'drive', positionInFeet: 20.8, weightLbs: 17000 },
-      { id: 'ax-4', name: 'Trailer Axle 1', groupName: 'trailer', positionInFeet: 46.7, weightLbs: 17000 },
-      { id: 'ax-5', name: 'Trailer Axle 2', groupName: 'trailer', positionInFeet: 51.0, weightLbs: 17000 },
+      { id: 'ax-4', name: 'Trailer Axle 1', groupName: 'trailer', positionInFeet: 47.5, weightLbs: 17000 },
+      { id: 'ax-5', name: 'Trailer Axle 2', groupName: 'trailer', positionInFeet: 51.8, weightLbs: 17000 },
     ],
   },
   {

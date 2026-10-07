@@ -4,6 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    <!-- Runtime Environment & Extension Resilience Polyfill -->
+    <script>
+      (function() {
+        try {
+          var originalFetch = window.fetch;
+          Object.defineProperty(window, 'fetch', {
+            get: function() {
+              return originalFetch;
+            },
+            set: function(newFetch) {
+              originalFetch = newFetch;
+            },
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e) {}
+
+        window.addEventListener('error', function(event) {
+          if (event && event.filename && event.filename.indexOf('chrome-extension://') !== -1) {
+            event.preventDefault();
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          }
+        }, true);
+      })();
+    </script>
+    
     <!-- Primary SEO Metadata -->
     <title>DOT Weight | Federal Bridge Formula & DOT Axle Weight Calculator</title>
     <meta name="description" content="Calculate Federal Bridge Formula B compliance, axle limits, and state truck weight rules with our interactive DOT axle weight calculator." />

@@ -93,7 +93,7 @@ export function runPseoStressTest(vehicleSlug: string, stateSlug: string): PseoT
 
   // 4. Test 4: Crawl Mesh Connectivity
   const internalLinks = [
-    `/legal/${stateReg.slug}-dot-weight-laws`,
+    `/legal/${stateReg.slug}`,
     `/bridge-table/${vehicle.axles.length}-axles-24-ft`,
     `/calculator?preset=${vehicle.id}&state=${stateReg.slug}`,
     `/pseo-matrix`,

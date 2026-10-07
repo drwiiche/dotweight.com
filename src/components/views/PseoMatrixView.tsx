@@ -232,7 +232,7 @@ export function PseoMatrixView() {
                   <span className="text-[10px] font-bold text-[#0064e0] bg-[#0064e0]/10 px-2.5 py-0.5 rounded-full uppercase tracking-tight">
                     {st.abbreviation} Statutory Law
                   </span>
-                  <span className="text-[10px] font-mono text-slate-400">/legal/{st.slug}-dot-weight-laws</span>
+                  <span className="text-[10px] font-mono text-slate-400">/legal/{st.slug}</span>
                 </div>
                 <h3 className="font-bold text-[#0a1317] text-xs group-hover:text-[#0064e0] transition-colors">
                   {st.state} DOT Weight Laws & Permits

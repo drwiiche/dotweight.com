@@ -34,7 +34,7 @@ export interface SubgroupEvaluation {
 }
 
 export interface ComplianceViolation {
-  code: 'GVW_EXCEEDED' | 'SINGLE_AXLE_EXCEEDED' | 'TANDEM_AXLE_EXCEEDED' | 'BRIDGE_FORMULA_FAILED' | 'STATE_SPECIFIC_VIOLATION';
+  code: 'GVW_EXCEEDED' | 'SINGLE_AXLE_EXCEEDED' | 'TANDEM_AXLE_EXCEEDED' | 'BRIDGE_FORMULA_FAILED' | 'STATE_SPECIFIC_VIOLATION' | 'NEAR_GVW';
   title: string;
   message: string;
   severity: 'error' | 'warning';

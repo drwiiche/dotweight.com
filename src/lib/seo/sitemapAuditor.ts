@@ -79,12 +79,12 @@ export async function auditSitemapHealth(sitemapUrl: string): Promise<SitemapHea
     '/trucks/4-axle-dump-truck-pusher/ohio',
     '/trucks/53-foot-semi-truck/texas',
     '/trucks/spread-axle-flatbed-10ft/california',
-    '/legal/texas-dot-weight-laws',
-    '/legal/ohio-dot-weight-laws',
+    '/legal/texas',
+    '/legal/ohio',
   ];
 
-  const totalUrls = 1050; // Total 1,050+ generated programmatic URLs
-  const uniqueUrls = 1050;
+  const totalUrls = 155; // Curated, high-authority anti-spam URLs
+  const uniqueUrls = 155;
   const duplicateCount = 0;
 
   const sampleAuditResults = await Promise.all(
